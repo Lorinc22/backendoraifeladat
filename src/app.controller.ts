@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Query,
   Render,
 } from '@nestjs/common';
 import { AppService } from './app.service';
@@ -11,8 +12,15 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  @Render('index')
-  index() {
-    return { message: 'Welcome to the homepage' };
+  @Render('list')
+  async listPaintings(@Query('year') year =1990){
+    const[rows] = await db.execute(
+      'SELECT id,title FROM paintings WHERE year > ?' ,
+      [year],
+    );
+    return{
+      paintings : rows,
+    };
   }
+  
 }
